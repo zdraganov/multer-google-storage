@@ -1,0 +1,28 @@
+{
+  "name": "multer-gcp",
+  "version": "1.0.1",
+  "description": "Multer storage engine for GCP",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "npm publish ./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/despade/multer-google-storage.git"
+  },
+  "keywords": [
+    "multer",
+    "google",
+    "storage"
+  ],
+  "author": "Zhivko Draganov <zhivko.draganov@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/despade/multer-google-storage/issues"
+  },
+  "homepage": "https://gitlab.com/despade/multer-google-storage#README",
+  "dependencies": {
+    "@google-cloud/storage": "^1.4.0"
+  }
+}
