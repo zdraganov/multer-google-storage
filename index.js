@@ -11,8 +11,13 @@ function getDestination (req, file, cb) {
   cb(null, '')
 }
 
+function getMetadata (req, file, cb) {
+  cb(null, {})
+}
+
 function GCStorage (opts) {
   this.getFilename = (opts.filename || getFilename)
+  this.getMetadata = (opts.getMetadata || getMetadata)
 
   if (typeof opts.destination === 'string') {
     this.getDestination = function ($0, $1, cb) { cb(null, opts.destination) }
@@ -56,15 +61,26 @@ GCStorage.prototype._handleFile = function (req, file, cb) {
       if (err) {
         return cb(err)
       }
-      var gcFile = self.gcsBucket.file(filename)
-      file.stream.pipe(gcFile.createWriteStream({predefinedAcl: self.options.acl || 'private'}))
-      .on('error', function (err) {
-        return cb(err)
-      })
-      .on('finish', function (file) {
-        return cb(null, {
-          path: 'https://storage.googleapis.com/' + self.options.bucket + '/' + filename,
-          filename: filename
+
+      self.getMetadata(req, file, function (err, metadata) {
+        if (err) {
+          return cb(err)
+        }
+
+        var gcFile = self.gcsBucket.file(filename)
+
+        file.stream.pipe(gcFile.createWriteStream({
+          predefinedAcl: self.options.acl || 'private',
+          metadata: metadata
+        }))
+        .on('error', function (err) {
+          return cb(err)
+        })
+        .on('finish', function (file) {
+          return cb(null, {
+            path: 'https://storage.googleapis.com/' + self.options.bucket + '/' + filename,
+            filename: filename
+          })
         })
       })
     })
